@@ -1,0 +1,6 @@
+Django
+django-filter
+djangorestframework
+Markdown
+pytz
+sqlparse
