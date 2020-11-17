@@ -22,7 +22,7 @@ admin.site.register(Follower,FollowerAdmin)
 
 
 class PostAdmin(admin.ModelAdmin):
-    fields = ['owner', 'created','modified','description']
+    fields = ['owner','description']
     list_display = ['owner', 'created','modified','description']
     list_filter = ['owner', 'created','modified']
     search_fields = ['description',]

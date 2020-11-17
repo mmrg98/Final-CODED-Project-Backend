@@ -17,10 +17,16 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from fammunity import views
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', TokenObtainPairView.as_view() , name='login'),
+    path('signup/', views.SignUpAPIView.as_view(), name='register'),
+    path('profile/', views.ProfileView.as_view(), name="address"),
+    path('profile/edit/', views.UpdateProfile.as_view(), name="edit-profile"),
+
 ]
 
 
