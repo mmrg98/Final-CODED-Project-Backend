@@ -26,6 +26,7 @@ urlpatterns = [
     path('signup/', views.SignUpAPIView.as_view(), name='register'),
     path('profile/', views.ProfileView.as_view(), name="address"),
     path('profile/edit/', views.UpdateProfile.as_view(), name="edit-profile"),
+    path('post/', views.createPost.as_view(), name="post"),
 
 ]
 
