@@ -32,6 +32,7 @@ class UpdateProfile(APIView):
 			profile.user.last_name= request.data['last_name']
 			profile.user.email= request.data['email']
 			profile.user.save()
+			#update image and gender
 
 			profile.save()
 			return Response(profile.user.username, status=HTTP_200_OK)

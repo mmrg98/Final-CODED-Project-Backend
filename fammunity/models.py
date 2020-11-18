@@ -10,6 +10,7 @@ class Profile(models.Model):
 		("F", "Female"),
 		("M", "Male")
 	)
+	followers = models.ManyToManyField("self", related_name="following")
 	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 	gender = models.CharField(choices=GENDER, max_length=2, null=True)
 	image = models.ImageField(upload_to='profile_image', default='profile.png')
@@ -24,16 +25,11 @@ def create_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user= instance)
 
 
-class Follower(models.Model): 
-	user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='following')
-	follower = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='followers')
 
-	def __str__(self):
-		return '%s' % (self.user.user.username)
-		 
 
 
 class Post(models.Model):
+	liked_by = models.ManyToManyField(Profile, related_name='likes')
 	description = models.TextField(max_length=500)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
@@ -55,8 +51,8 @@ class Photo(models.Model):
 
 class Item(models.Model):
 	name = models.CharField(max_length=250) 
-	brand = models.CharField(max_length=250,blank=True,null=True) 
-	store = models.CharField(max_length=250,blank=True,null=True) 
+	brand = models.CharField(max_length=250,blank=True,null=True) #separate model 
+	store = models.CharField(max_length=250,blank=True,null=True) #separate model 
 	size = models.IntegerField(blank=True,null=True) 
 	price = models.DecimalField(max_digits=4, decimal_places=2,blank=True,null=True)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='items')
@@ -71,7 +67,3 @@ class Comment(models.Model):
 	commenter = models.ForeignKey(Profile, on_delete=models.CASCADE)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
 	
-
-class Like(models.Model): 
-	fan = models.ForeignKey(Profile, on_delete=models.CASCADE)
-	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='fans')
