@@ -64,6 +64,26 @@ class createPost(APIView):
 			return Response({"msg": "Something went wrong"}, status=HTTP_400_BAD_REQUEST)
 
 
+class createComments(APIView):
+	serializer_class = PostSerializer
+	permission_classes = [IsAuthenticated]
+
+
+	def post(self, request):
+		profile = Profile.objects.get(user=self.request.user)
+
+		try:
+			post = Post.objects.get(id=request.data['post_id'])
+
+			#images_length = request.data['photos'].length
+			comment = Comment(txt=request.data['txt'], post=post, commenter=profile)
+			comment.save()
+
+			return Response(comment.txt, status=HTTP_200_OK)
+		except:
+			return Response({"msg": "Something went wrong"}, status=HTTP_400_BAD_REQUEST)
+
+
 class UpdateProfile(APIView):
 	serializer_class = ProfileSerializer
 	permission_classes = [IsAuthenticated]
