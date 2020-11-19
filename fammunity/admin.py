@@ -40,10 +40,10 @@ admin.site.register(Photo,PhotoAdmin)
 
 
 class ItemAdmin(admin.ModelAdmin):
-    fields = ['name', 'brand','store','size','price','post']
-    list_display = ['name', 'brand','store','size','price','post']
-    list_filter = ['brand','store','size','price']
-    search_fields = ['name', 'brand','store','size','price','post']
+    fields = ['name', 'brand','size','price','post']
+    list_display = ['name', 'brand','size','price','post']
+    list_filter = ['brand','size','price']
+    search_fields = ['name', 'brand','size','price','post']
     list_display_links = ['name',]
 
 admin.site.register(Item,ItemAdmin)
