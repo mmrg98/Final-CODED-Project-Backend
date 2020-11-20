@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView,
 from .serializers import  (
 	SignUpSerializer, ProfileSerializer, PostSerializer
 )
-from .models import Profile, Follower, Post, Photo, Item, Comment, Like
+from .models import Profile, Post, Photo, Item, Comment
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response

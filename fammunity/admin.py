@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile,Follower,Post,Photo,Item,Comment,Like
+from .models import Profile,Post,Photo,Item,Comment
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -11,14 +11,6 @@ class ProfileAdmin(admin.ModelAdmin):
 
 admin.site.register(Profile,ProfileAdmin)
 
-
-class FollowerAdmin(admin.ModelAdmin):
-    fields = ['user', 'follower']
-    list_display = ['user', 'follower']
-    list_filter = ['user', 'follower']
-    list_display_links = ['user',]
-
-admin.site.register(Follower,FollowerAdmin)
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -59,11 +51,3 @@ class CommentAdmin(admin.ModelAdmin):
 admin.site.register(Comment,CommentAdmin)
 
 
-class LikeAdmin(admin.ModelAdmin):
-    fields = ['fan', 'post']
-    list_display = ['fan', 'post']
-    list_filter = ['fan']
-    search_fields = ['post']
-    list_display_links = ['fan',]
-
-admin.site.register(Like,LikeAdmin)

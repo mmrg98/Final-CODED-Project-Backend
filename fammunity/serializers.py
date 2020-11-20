@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Profile,Follower,Post,Photo,Item,Comment,Like
+from .models import Profile,Post,Photo,Item,Comment
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
