@@ -42,10 +42,10 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-	images=PhotoSerializer(many=True)
+	photos=PhotoSerializer(many=True)
 	class Meta:
 		model= Post
-		fields = ['description', 'images']
+		fields = ['description','photos']
 
 
 class CommentSerializer(serializers.ModelSerializer):

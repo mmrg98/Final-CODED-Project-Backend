@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile,Post,Photo,Item,Comment
+from .models import Profile,Post,Photo,Item,Comment,Brand
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -10,6 +10,14 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display_links = ['user',]
 
 admin.site.register(Profile,ProfileAdmin)
+
+class BrandAdmin(admin.ModelAdmin):
+    fields = ['name']
+    list_display = ['name', 'id']
+    search_fields = ['name',]
+    list_display_links = ['name',]
+
+admin.site.register(Brand,BrandAdmin)
 
 
 
