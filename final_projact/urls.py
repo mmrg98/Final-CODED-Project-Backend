@@ -11,8 +11,12 @@ urlpatterns = [
     path('signup/', views.SignUpAPIView.as_view(), name='register'),
     path('profile/', views.ProfileView.as_view(), name="address"),
     path('profile/edit/', views.UpdateProfile.as_view(), name="edit-profile"),
+
     path('posts/', views.PostListView.as_view(), name="post-list"),
     path('post/', views.CreatePost.as_view(), name="post"),
+
+    path('like/', views.LikePost.as_view(), name="like"), #new
+
 
 ]
 

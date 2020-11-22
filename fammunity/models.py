@@ -52,8 +52,6 @@ class Brand(models.Model):
 class Item(models.Model):
 	name = models.CharField(max_length=250)
 	brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='items')
-	# Remove size field
-	size = models.IntegerField(blank=True,null=True)
 	price = models.DecimalField(max_digits=4, decimal_places=2,blank=True,null=True)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='items')
 
