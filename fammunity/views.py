@@ -1,5 +1,7 @@
-from django.shortcuts import render
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import (
+	ListAPIView, CreateAPIView, RetrieveAPIView,
+	RetrieveUpdateAPIView
+)
 from .serializers import  (
 	SignUpSerializer, ProfileSerializer, PostSerializer
 )
@@ -8,7 +10,6 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-
 from django.contrib.auth.models import User
 
 
@@ -35,34 +36,26 @@ class CreatePost(APIView):
 	def post(self, request):
 		data = request.data
 		files = request.FILES
-		print("print request.FILES" ,files)
-		print("print request.data" ,data)
+		profile = request.user.profile
 
-
-
-		user_obj = User.objects.get(username="hanodi") #hend added this for testing
-		profile = Profile.objects.get(user=user_obj) #hend added this for testing
-		#profile = Profile.objects.get(user=self.request.user) #By Hamza
 		post = Post.objects.create(owner=profile, description=data['description'])
 
-		# # Iterate over items 
-		itemsCounter = int(data['itemsCounter'])
-		for i in range(itemsCounter):
-			brand = Brand.objects.get(id=int(data['brand'+str(i)]))
-			new_item = Item.objects.create(post=post,name=data['name'+str(i)],brand=brand,size=int(data['size'+str(i)]),price=int(data['price'+str(i)]))
+		items_counter = int(data['itemsCounter'])
+		for i in range(items_counter):
+			Item.objects.create(
+				post=post,
+				name=data[f'name{i}'],
+				brand_id = int(data[f'brand{i}']),
+				size = int(data[f'size{i}']),
+				price = int(data[f'price{i}'])
+			)
 
-
-		# Iterate over images 
 		counter = int(data['counter'])
 		for i in range(counter):
-			print('files["photo"+str(i)]',files['photo'+str(i)])
-			new_image = Photo.objects.create(post=post,image=files['photo'+str(i)])
-
-		# Iterate over images from files
-		# Create image and assign to "post"
-
-		return Response(status=HTTP_200_OK)
-		#return Response(image.image.url, status=HTTP_200_OK)
+			file_value = files[f'photo{i}']
+			Photo.objects.create(post=post,image=file_value)
+			
+		return Response(status=HTTP_200_OK))
 
 
 class CreateComment(APIView):

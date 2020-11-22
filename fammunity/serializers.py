@@ -47,7 +47,7 @@ class PostSerializer(serializers.ModelSerializer):
 		model= Post
 		fields = ['description','photos']
 
-
+# Remove this serializer, not used.
 class CommentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Comment

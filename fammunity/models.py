@@ -13,7 +13,8 @@ class Profile(models.Model):
 	followers = models.ManyToManyField("self", related_name="following", blank=True, null=True)
 	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 	gender = models.CharField(choices=GENDER, max_length=2, null=True)
-	image = models.ImageField(upload_to='profile_image', default='profile.png')
+	# Handle default image using static image in front-end
+	image = models.ImageField(upload_to='profile_image')
 
 	def __str__(self):
 		return self.user.username
@@ -30,11 +31,10 @@ class Post(models.Model):
 	description = models.TextField(max_length=500)
 	created = models.DateTimeField(auto_now_add=True)
 	modified = models.DateTimeField(auto_now=True)
-	owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='owner')
+	owner = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='posts')
 
 	def __str__(self):
-		return '%s ,id: %s' % (self.owner.user.username, self.id)
-
+		return f'{self.owner.user.username} ,id: {self.id}'
 
 
 class Photo(models.Model):
@@ -42,7 +42,7 @@ class Photo(models.Model):
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='photos')
 
 	def __str__(self):
-		return '%s' % (self.post.owner.user.username)
+		return self.post.owner.user.username
 
 
 class Brand(models.Model):
@@ -52,6 +52,7 @@ class Brand(models.Model):
 class Item(models.Model):
 	name = models.CharField(max_length=250)
 	brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='items')
+	# Remove size field
 	size = models.IntegerField(blank=True,null=True)
 	price = models.DecimalField(max_digits=4, decimal_places=2,blank=True,null=True)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='items')
