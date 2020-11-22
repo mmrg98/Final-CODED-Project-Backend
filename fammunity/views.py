@@ -31,12 +31,16 @@ class PostListView(ListAPIView):
 
 
 class CreatePost(APIView):
+	serializer_class = PostSerializer
 	permission_classes = [AllowAny]
 
 	def post(self, request):
 		data = request.data
 		files = request.FILES
-		profile = request.user.profile
+		# profile = request.user.profile
+
+		user_obj = User.objects.get(username="hanodi") #hend added this for testing
+		profile = Profile.objects.get(user=user_obj) #hend added this for testing
 
 		post = Post.objects.create(owner=profile, description=data['description'])
 
@@ -55,7 +59,7 @@ class CreatePost(APIView):
 			file_value = files[f'photo{i}']
 			Photo.objects.create(post=post,image=file_value)
 			
-		return Response(status=HTTP_200_OK))
+		return Response(self.serializer_class(post).data,status=HTTP_200_OK)
 
 
 class CreateComment(APIView):

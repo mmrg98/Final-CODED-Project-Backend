@@ -40,12 +40,18 @@ class PhotoSerializer(serializers.ModelSerializer):
 		model= Photo
 		fields = ['image']
 
+class ItemSerializer(serializers.ModelSerializer):
+	class Meta:
+		model= Item
+		fields = '__all__'
+
 
 class PostSerializer(serializers.ModelSerializer):
 	photos=PhotoSerializer(many=True)
+	items=ItemSerializer(many=True)
 	class Meta:
 		model= Post
-		fields = ['description','photos']
+		fields = ['id','description','photos','items']
 
 # Remove this serializer, not used.
 class CommentSerializer(serializers.ModelSerializer):
