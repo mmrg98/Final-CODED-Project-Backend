@@ -28,13 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = ['username', 'first_name', 'last_name', 'email']
 
 
-class ProfileSerializer(serializers.ModelSerializer):
-	user=UserSerializer()
-	class Meta:
-		model= Profile
-		fields = ['id','user','gender','image']
-
-
 class PhotoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Photo
@@ -57,6 +50,15 @@ class PostSerializer(serializers.ModelSerializer):
 
 	def get_likers_number(self, obj): #new
 		return obj.liked_by.all().count()
+
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+	user=UserSerializer()
+	posts=PostSerializer(many=True) #new
+	class Meta:
+		model= Profile
+		fields = ['id','user','gender','image','posts']
 
 
 
