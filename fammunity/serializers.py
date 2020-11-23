@@ -32,13 +32,13 @@ class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()
 	class Meta:
 		model= Profile
-		fields = ['user','gender','image']
+		fields = ['id','user','gender','image']
 
 
 class PhotoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Photo
-		fields = ['image']
+		fields = ['id','image']
 
 class ItemSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -49,16 +49,30 @@ class ItemSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
 	photos=PhotoSerializer(many=True)
 	items=ItemSerializer(many=True)
-	liked_by = serializers.SerializerMethodField() #new
+	likers_number = serializers.SerializerMethodField() #new
+
 	class Meta:
 		model= Post
-		fields = ['id','description','photos','items','liked_by']
+		fields = ['id','description','photos','items','likers_number']
 
-	def get_liked_by(self, obj): #new
+	def get_likers_number(self, obj): #new
 		return obj.liked_by.all().count()
+
+
 
 # Remove this serializer, not used.
 class CommentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Comment
 		fields = ['txt']
+
+
+class LikeSerializer(serializers.ModelSerializer): #new
+	likers = serializers.SerializerMethodField() 
+	class Meta:
+		model= Post
+		fields = ['id','likers']
+	def get_likers(self, obj): 
+		return ProfileSerializer(obj.liked_by.all(),many=True).data
+
+
