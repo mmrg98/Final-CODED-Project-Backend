@@ -37,9 +37,7 @@ class CreatePost(APIView):
 	def post(self, request):
 		data = request.data
 		files = request.FILES
-		profile = request.user.profile # the original 
-
-
+		profile = request.user.profile
 
 		post = Post.objects.create(owner=profile, description=data['description'])
 
@@ -57,10 +55,10 @@ class CreatePost(APIView):
 			file_value = files[f'photo{i}']
 			Photo.objects.create(post=post,image=file_value)
 			
-		return Response(self.serializer_class(post).data,status=HTTP_200_OK)
+		return Response(self.serializer_class(post).data ,status=HTTP_200_OK)
 
 
-class CreateComment(APIView): #new
+class CreateComment(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def post(self, request):
@@ -69,7 +67,7 @@ class CreateComment(APIView): #new
 			post_id=request.data['post_id'], 
 			commenter=self.request.user.profile
 		)
-		return Response(comment.txt, status=HTTP_200_OK)
+		return Response({"comment": comment.txt}, status=HTTP_200_OK)
 
 
 class UpdateProfile(APIView):
@@ -86,29 +84,28 @@ class UpdateProfile(APIView):
 		profile = user.profile
 		# Update Gender and Image
 		profile.save()
-		return Response(profile.user.username, status=HTTP_200_OK)
+		return Response({"username": profile.user.username}, status=HTTP_200_OK)
 
 
-class LikePost(APIView): #new
+class LikePost(APIView):
 	permission_classes=[IsAuthenticated]
-	permission_classes = [AllowAny]
+	# permission_classes = [AllowAny]
 
 	def post(self, request):
-		profile = Profile.objects.get(user=self.request.user) #By mariam
+		profile = self.request.user.profile
 		post = Post.objects.get(id=request.data['post_id'])
 
 		if profile in post.liked_by.all():
 			post.liked_by.remove(profile)
 			post.save()
-			return Response("false", status=HTTP_200_OK)
-
+			return Response({"liked": False}, status=HTTP_200_OK)
 		else:
 			post.liked_by.add(profile)
 			post.save()			
-			return Response("true", status=HTTP_200_OK)
+			return Response({"liked": True}, status=HTTP_200_OK)
 
-
-class LikersListView(ListAPIView): #new
+# Changed to retrieve api view
+class LikersListView(ListAPIView):
 	queryset = Post.objects.all()
 	serializer_class = LikeSerializer
 	permission_classes = [AllowAny] 

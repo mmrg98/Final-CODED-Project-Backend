@@ -15,8 +15,8 @@ urlpatterns = [
     path('posts/', views.PostListView.as_view(), name="post-list"),
     path('post/', views.CreatePost.as_view(), name="post"),
 
-    path('like/', views.LikePost.as_view(), name="like"), #new
-    path('likers/', views.LikersListView.as_view(), name="likers"), #new
+    path('like/', views.LikePost.as_view(), name="like"),
+    path('likers/', views.LikersListView.as_view(), name="likers"),
 
 
 ]
