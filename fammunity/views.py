@@ -49,7 +49,6 @@ class CreatePost(APIView):
 				post=post,
 				name=data[f'name{i}'],
 				brand_id = int(data[f'brand{i}']),
-				size = int(data[f'size{i}']),
 				price = int(data[f'price{i}'])
 			)
 
