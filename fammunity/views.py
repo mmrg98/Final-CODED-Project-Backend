@@ -3,7 +3,7 @@ from rest_framework.generics import (
 	RetrieveUpdateAPIView
 )
 from .serializers import  (
-	SignUpSerializer, ProfileSerializer, PostSerializer
+	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer
 )
 from .models import Profile, Post, Photo, Item, Comment,Brand
 from rest_framework.views import APIView
@@ -110,3 +110,9 @@ class LikePost(APIView): #new
 			post.liked_by.add(profile)
 			post.save()			
 			return Response("true", status=HTTP_200_OK)
+
+
+class LikersListView(ListAPIView): #new
+	queryset = Post.objects.all()
+	serializer_class = LikeSerializer
+	permission_classes = [AllowAny] 
