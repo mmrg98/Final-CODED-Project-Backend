@@ -13,7 +13,6 @@ class Profile(models.Model):
 	followers = models.ManyToManyField("self", related_name="following", blank=True, null=True)
 	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 	gender = models.CharField(choices=GENDER, max_length=2, null=True)
-	# Handle default image using static image in front-end
 	image = models.ImageField(upload_to='profile_image')
 
 	def __str__(self):
@@ -54,9 +53,6 @@ class Item(models.Model):
 	brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='items')
 	price = models.DecimalField(max_digits=4, decimal_places=2,blank=True,null=True)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='items')
-
-	def __str__(self):
-		return '%s:  %s' % (self.post.owner.user.username, self.name)
 
 
 class Comment(models.Model):

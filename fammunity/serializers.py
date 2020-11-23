@@ -49,30 +49,20 @@ class ItemSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
 	photos=PhotoSerializer(many=True)
 	items=ItemSerializer(many=True)
-	likers_number = serializers.SerializerMethodField() #new
+	likers_number = serializers.SerializerMethodField()
 
 	class Meta:
 		model= Post
 		fields = ['id','description','photos','items','likers_number']
 
-	def get_likers_number(self, obj): #new
+	def get_likers_number(self, obj):
 		return obj.liked_by.all().count()
 
 
-
-# Remove this serializer, not used.
-class CommentSerializer(serializers.ModelSerializer):
-	class Meta:
-		model= Comment
-		fields = ['txt']
-
-
-class LikeSerializer(serializers.ModelSerializer): #new
-	likers = serializers.SerializerMethodField() 
+class LikeSerializer(serializers.ModelSerializer):
+	liked_by = ProfileSerializer(many=True)
+	
 	class Meta:
 		model= Post
-		fields = ['id','likers']
-	def get_likers(self, obj): 
-		return ProfileSerializer(obj.liked_by.all(),many=True).data
-
-
+		fields = ['id','liked_by']
+	
