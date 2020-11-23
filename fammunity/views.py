@@ -37,10 +37,9 @@ class CreatePost(APIView):
 	def post(self, request):
 		data = request.data
 		files = request.FILES
-		# profile = request.user.profile # the original 
+		profile = request.user.profile # the original 
 
-		user_obj = User.objects.get(username="hanodi") #hend added this for testing
-		profile = Profile.objects.get(user=user_obj) #hend added this for testing
+
 
 		post = Post.objects.create(owner=profile, description=data['description'])
 
@@ -96,9 +95,7 @@ class LikePost(APIView): #new
 	permission_classes = [AllowAny]
 
 	def post(self, request):
-		# profile = Profile.objects.get(user=self.request.user) #By mariam
-		user_obj = User.objects.get(username="hanodi") #hend added this for testing
-		profile = Profile.objects.get(user=user_obj) #hend added this for testing
+		profile = Profile.objects.get(user=self.request.user) #By mariam
 		post = Post.objects.get(id=request.data['post_id'])
 
 		if profile in post.liked_by.all():
