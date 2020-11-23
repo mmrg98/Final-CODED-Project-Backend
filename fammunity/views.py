@@ -27,7 +27,7 @@ class ProfileView(RetrieveAPIView):
 class PostListView(ListAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
-	permission_classes = [AllowAny] 
+	permission_classes = [AllowAny]
 
 
 class CreatePost(APIView):
@@ -37,7 +37,7 @@ class CreatePost(APIView):
 	def post(self, request):
 		data = request.data
 		files = request.FILES
-		# profile = request.user.profile # the original 
+		# profile = request.user.profile # the original
 
 		user_obj = User.objects.get(username="hanodi") #hend added this for testing
 		profile = Profile.objects.get(user=user_obj) #hend added this for testing
@@ -58,7 +58,7 @@ class CreatePost(APIView):
 		for i in range(counter):
 			file_value = files[f'photo{i}']
 			Photo.objects.create(post=post,image=file_value)
-			
+
 		return Response(self.serializer_class(post).data,status=HTTP_200_OK)
 
 
@@ -67,11 +67,28 @@ class CreateComment(APIView): #new
 
 	def post(self, request):
 		comment = Comment.objects.create(
-			txt=request.data['txt'], 
-			post_id=request.data['post_id'], 
+			txt=request.data['txt'],
+			post_id=request.data['post_id'],
 			commenter=self.request.user.profile
 		)
 		return Response(comment.txt, status=HTTP_200_OK)
+
+
+class LikePost(APIView):
+	permission_classes=[IsAuthenticated]
+
+	def post(self, request):
+		profile = Profile.objects.get(user=self.request.user)
+		post = Post.objects.get(id=request.data['post_id'])
+
+		if profile in post.liked_by:
+			post.liked_by.remove(profile)
+			return Response("false", status=HTTP_200_OK)
+
+		else:
+			post.liked_by.add(profile)
+			return Response("true", status=HTTP_200_OK)
+
 
 
 class UpdateProfile(APIView):
@@ -79,13 +96,14 @@ class UpdateProfile(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def post(self, request):
-		user = self.request.user		
+		user = self.request.user
 		user.first_name= request.data['first_name']
 		user.last_name= request.data['last_name']
 		user.email= request.data['email']
 		user.save()
 
 		profile = user.profile
+		profile.gender= request.data['gender']
 		# Update Gender and Image
 		profile.save()
 		return Response(profile.user.username, status=HTTP_200_OK)
@@ -108,5 +126,5 @@ class LikePost(APIView): #new
 
 		else:
 			post.liked_by.add(profile)
-			post.save()			
+			post.save()
 			return Response("true", status=HTTP_200_OK)

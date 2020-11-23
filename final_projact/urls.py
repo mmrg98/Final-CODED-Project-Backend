@@ -9,7 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', TokenObtainPairView.as_view() , name='login'),
     path('signup/', views.SignUpAPIView.as_view(), name='register'),
-    path('profile/', views.ProfileView.as_view(), name="address"),
+    path('profile/', views.ProfileView.as_view(), name="profile"),
     path('profile/edit/', views.UpdateProfile.as_view(), name="edit-profile"),
 
     path('posts/', views.PostListView.as_view(), name="post-list"),
