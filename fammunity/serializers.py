@@ -66,7 +66,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()
-	posts=PostSerializer(many=True) #new
+	posts=PostSerializer(many=True)
 	class Meta:
 		model= Profile
 		fields = ['id','user','gender','image','posts']
