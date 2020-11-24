@@ -10,7 +10,6 @@ class Profile(models.Model):
 		("F", "Female"),
 		("M", "Male")
 	)
-	followers = models.ManyToManyField("self", related_name="following", blank=True, null=True)
 	user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 	gender = models.CharField(choices=GENDER, max_length=2, null=True)
 	image = models.ImageField(upload_to='profile_image')
@@ -59,3 +58,7 @@ class Comment(models.Model):
 	txt = models.TextField(max_length=300)
 	commenter = models.ForeignKey(Profile, on_delete=models.CASCADE)
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+
+class Follow(models.Model):
+	user_from = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="following")
+	user_to = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="followers")

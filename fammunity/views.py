@@ -5,7 +5,7 @@ from rest_framework.generics import (
 from .serializers import  (
 	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer
 )
-from .models import Profile, Post, Photo, Item, Comment,Brand
+from .models import Profile, Post, Photo, Item, Comment,Brand, Follow
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -84,7 +84,6 @@ class UpdateProfile(APIView):
 		profile = user.profile
 		profile.gender= request.data['gender']
 		profile.image = files['image']
-
 		profile.save()
 		return Response({"username": profile.user.username}, status=HTTP_200_OK)
 
@@ -105,13 +104,14 @@ class LikePost(APIView):
 			post.save()
 			return Response({"liked": True}, status=HTTP_200_OK)
 
-# Changed to retrieve api view
+
 class LikersListView(RetrieveAPIView):
     queryset = Post.objects.all()
     lookup_field = 'id'
     lookup_url_kwarg = 'post_id'
     serializer_class = LikeSerializer
     permission_classes = [AllowAny] 
+
 
 class UserProfileView(RetrieveAPIView):
     queryset = Profile.objects.all()
@@ -126,18 +126,19 @@ class Follow(APIView):
 	# permission_classes = [AllowAny]
 
 	def post(self, request):
-		user_following = User.objects.get(username=request.data['username'])
-		profile = Profile.objects.get(user=user_following)
-		following = Profile.objects.get(user=self.request.user)
+		user = request.user.profile
+		user_to_follow = Profile.objects.get(user=request.data['profile_id'])
+		
+		follow_obj, created = Follow.objects.get_or_create(
+			user_from = user,
+			user_to = user_to_follow,
+		)
 
-		if following in profile.followers.all():
-			profile.followers.remove(following)
-			profile.save()
-			return Response({"followw": [follower.user.username for follower in profile.followers.all()]}, status=HTTP_200_OK)
-		else:
-			profile.followers.add(following)
-			profile.save()
-			return Response({"follow": [follower.user.username for follower in profile.followers.all()]}, status=HTTP_200_OK)
+		if not created:
+			follow_obj.delete()
+		
+		follow = user.following.all().values_list('user_to__username', flat=True)
+		return Response({"follow": follow}, status=HTTP_200_OK)
 
 
 class Feeds(ListAPIView):
