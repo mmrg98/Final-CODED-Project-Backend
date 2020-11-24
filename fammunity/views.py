@@ -27,7 +27,7 @@ class ProfileView(RetrieveAPIView):
 class PostListView(ListAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
-	permission_classes = [AllowAny] 
+	permission_classes = [AllowAny]
 
 
 class CreatePost(APIView):
@@ -54,7 +54,7 @@ class CreatePost(APIView):
 		for i in range(counter):
 			file_value = files[f'photo{i}']
 			Photo.objects.create(post=post,image=file_value)
-			
+
 		return Response(self.serializer_class(post).data ,status=HTTP_200_OK)
 
 
@@ -63,8 +63,8 @@ class CreateComment(APIView):
 
 	def post(self, request):
 		comment = Comment.objects.create(
-			txt=request.data['txt'], 
-			post_id=request.data['post_id'], 
+			txt=request.data['txt'],
+			post_id=request.data['post_id'],
 			commenter=self.request.user.profile
 		)
 		return Response({"comment": comment.txt}, status=HTTP_200_OK)
@@ -75,14 +75,16 @@ class UpdateProfile(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def post(self, request):
-		user = self.request.user		
+		user = self.request.user
 		user.first_name= request.data['first_name']
 		user.last_name= request.data['last_name']
 		user.email= request.data['email']
 		user.save()
 
 		profile = user.profile
-		# Update Gender and Image
+		profile.gender= request.data['gender']
+		profile.image = files['image']
+
 		profile.save()
 		return Response({"username": profile.user.username}, status=HTTP_200_OK)
 
@@ -101,11 +103,40 @@ class LikePost(APIView):
 			return Response({"liked": False}, status=HTTP_200_OK)
 		else:
 			post.liked_by.add(profile)
-			post.save()			
+			post.save()
 			return Response({"liked": True}, status=HTTP_200_OK)
 
 # Changed to retrieve api view
 class LikersListView(ListAPIView):
 	queryset = Post.objects.all()
 	serializer_class = LikeSerializer
-	permission_classes = [AllowAny] 
+	permission_classes = [AllowAny]
+
+
+class Follow(APIView):
+	permission_classes=[IsAuthenticated]
+	# permission_classes = [AllowAny]
+
+	def post(self, request):
+		user_following = User.objects.get(username=request.data['username'])
+		profile = Profile.objects.get(user=user_following)
+		following = Profile.objects.get(user=self.request.user)
+
+		if following in profile.followers.all():
+			profile.followers.remove(following)
+			profile.save()
+			return Response({"followw": [follower.user.username for follower in profile.followers.all()]}, status=HTTP_200_OK)
+		else:
+			profile.followers.add(following)
+			profile.save()
+			return Response({"follow": [follower.user.username for follower in profile.followers.all()]}, status=HTTP_200_OK)
+
+
+class Feeds(ListAPIView):
+	serializer_class = PostSerializer
+	permission_classes = [IsAuthenticated]
+
+	def post(self, request):
+		user = Profile.objects.get(user=self.request.user)
+		queryset = Post.objects.filter(owner__in=user.followers.all()).order_by('created')
+		return Response({"feeds": [post.description for post in queryset]}, status=HTTP_200_OK)
