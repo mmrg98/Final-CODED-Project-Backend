@@ -89,15 +89,16 @@ class UpdateProfile(APIView):
 
 class LikePost(APIView):
 	permission_classes=[IsAuthenticated]
-	# permission_classes = [AllowAny]
 
 	def post(self, request):
 		profile = self.request.user.profile
 		post = Post.objects.get(id=request.data['post_id'])
+		print(request.data['post_id'])
 
 		if profile in post.liked_by.all():
 			post.liked_by.remove(profile)
 			post.save()
+			print()
 			return Response({"liked": False}, status=HTTP_200_OK)
 		else:
 			post.liked_by.add(profile)
@@ -105,7 +106,21 @@ class LikePost(APIView):
 			return Response({"liked": True}, status=HTTP_200_OK)
 
 # Changed to retrieve api view
-class LikersListView(ListAPIView):
+class LikersListView(RetrieveAPIView):
 	queryset = Post.objects.all()
+	lookup_field = 'id'
+	lookup_url_kwarg = 'post_id'
 	serializer_class = LikeSerializer
 	permission_classes = [AllowAny] 
+
+
+class UserProfileView(RetrieveAPIView):
+	queryset = Profile.objects.all()
+	lookup_field = 'id'
+	lookup_url_kwarg = 'owner_id'
+	serializer_class = ProfileSerializer
+	permission_classes = [AllowAny] 
+
+
+
+

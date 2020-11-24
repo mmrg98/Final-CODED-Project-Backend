@@ -16,7 +16,8 @@ urlpatterns = [
     path('post/', views.CreatePost.as_view(), name="post"),
 
     path('like/', views.LikePost.as_view(), name="like"),
-    path('likers/', views.LikersListView.as_view(), name="likers"),
+    path('likers/<int:post_id>', views.LikersListView.as_view(), name="likers"),
+    path('user-profile/<int:owner_id>', views.UserProfileView.as_view(), name="user-profile"),
 
 
 ]

@@ -43,37 +43,45 @@ class PostSerializer(serializers.ModelSerializer):
 	photos=PhotoSerializer(many=True)
 	items=ItemSerializer(many=True)
 	likers_number = serializers.SerializerMethodField()
+	liked = serializers.SerializerMethodField()
+	owner_name = serializers.SerializerMethodField()
 
 	class Meta:
 		model= Post
-		fields = ['id','description','photos','items','likers_number']
+		fields = ['id','description','photos','items','likers_number','owner','owner_name','liked']
 
 	def get_likers_number(self, obj):
 		return obj.liked_by.all().count()
 
+	def get_liked(self, obj):
+		user = self.context['request'].user
+		if user.is_authenticated:
+			return user.profile in obj.liked_by.all()
+		return False
+
+	def get_owner_name(self, obj):
+		return obj.owner.user.username
 
 
 
-# class ProfileSerializer(serializers.ModelSerializer):
-# 	user=UserSerializer()
-# 	posts=PostSerializer(many=True) #new
-# 	class Meta:
-# 		model= Profile
-# 		fields = ['id','user','gender','image','posts']
+class ProfileSerializer(serializers.ModelSerializer):
+	user=UserSerializer()
+	posts=PostSerializer(many=True) 
+	class Meta:
+		model= Profile
+		fields = ['id','user','gender','image','posts']
 
 
-
-# # Remove this serializer, not used.
-# class CommentSerializer(serializers.ModelSerializer):
-# 	class Meta:
-# 		model= Comment
-# 		fields = ['txt']
-
+class ProfileSerializer1(serializers.ModelSerializer):
+	user=UserSerializer()
+	class Meta:
+		model= Profile
+		fields = ['id','user','gender','image']
 
 
 
 class LikeSerializer(serializers.ModelSerializer):
-	liked_by = ProfileSerializer(many=True)
+	liked_by = ProfileSerializer1(many=True)
 
 	class Meta:
 		model= Post
