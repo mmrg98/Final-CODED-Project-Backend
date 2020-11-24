@@ -55,7 +55,7 @@ class CreatePost(APIView):
 			file_value = files[f'photo{i}']
 			Photo.objects.create(post=post,image=file_value)
 
-		return Response(self.serializer_class(post).data ,status=HTTP_200_OK)
+		return Response(self.serializer_class(post,context={'request':request}).data ,status=HTTP_200_OK)
 
 
 class CreateComment(APIView):

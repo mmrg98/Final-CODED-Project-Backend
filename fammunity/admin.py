@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile,Post,Photo,Item,Comment,Brand
+from .models import Profile,Post,Photo,Item,Comment,Brand,Follow
 
 
 class ProfileAdmin(admin.ModelAdmin):
@@ -44,5 +44,6 @@ admin.site.register(Profile,ProfileAdmin)
 admin.site.register(Brand,BrandAdmin)
 admin.site.register(Post,PostAdmin)
 admin.site.register(Photo)
+admin.site.register(Follow)
 admin.site.register(Item)
 admin.site.register(Comment,CommentAdmin)
