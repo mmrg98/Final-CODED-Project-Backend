@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Profile,Post,Photo,Item,Comment
+from .models import Profile,Post,Photo,Item,Comment,Follow
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -68,6 +68,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()
 	posts=PostSerializer(many=True)
 	followed=serializers.SerializerMethodField()
+	following = serializers.SerializerMethodField()
 	class Meta:
 		model= Profile
 		fields = ['id','user','gender','image','posts','following','followers','followed']
@@ -78,12 +79,23 @@ class ProfileSerializer(serializers.ModelSerializer):
 			return len(obj.followers.filter(user_from=user.profile)) > 0
 		return False
 
+	def get_following(self, obj):
+		following_objs = obj.following.all()
+		following_json = followingSerializer(following_objs, many=True).data
+		return following_json 
+
 
 class ProfileSerializer1(serializers.ModelSerializer):
     user=UserSerializer()
     class Meta:
         model= Profile
         fields = ['id','user','gender','image']
+
+class followingSerializer(serializers.ModelSerializer):
+	
+	class Meta:
+		model= Follow
+		fields = ['user_to']
 
 
 class LikeSerializer(serializers.ModelSerializer):
