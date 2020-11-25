@@ -61,4 +61,4 @@ class Comment(models.Model):
 
 class Follow(models.Model):
 	user_from = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="following")
-	user_to = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="followers")
+	user_to = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="followers")   

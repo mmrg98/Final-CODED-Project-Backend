@@ -67,9 +67,16 @@ class PostSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()
 	posts=PostSerializer(many=True)
+	followed=serializers.SerializerMethodField()
 	class Meta:
 		model= Profile
-		fields = ['id','user','gender','image','posts']
+		fields = ['id','user','gender','image','posts','following','followers','followed']
+
+	def get_followed(self, obj):
+		user = self.context['request'].user
+		if user.is_authenticated:
+			return len(obj.followers.filter(user_from=user.profile)) > 0
+		return False
 
 
 class ProfileSerializer1(serializers.ModelSerializer):

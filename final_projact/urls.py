@@ -22,7 +22,7 @@ urlpatterns = [
     path('like/', views.LikePost.as_view(), name="like"),
     path('likers/<int:post_id>', views.LikersListView.as_view(), name="likers"),
 
-    path('follow/', views.Follow.as_view(), name="follow"),
+    path('follow/', views.FollowProfile.as_view(), name="follow"),
 
 
 

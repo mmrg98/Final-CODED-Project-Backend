@@ -3,7 +3,7 @@ from rest_framework.generics import (
 	RetrieveUpdateAPIView
 )
 from .serializers import  (
-	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer
+	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer,ProfileSerializer1
 )
 from .models import Profile, Post, Photo, Item, Comment,Brand, Follow
 from rest_framework.views import APIView
@@ -89,6 +89,7 @@ class UpdateProfile(APIView):
 
 
 class LikePost(APIView):
+	serializer_class = LikeSerializer
 	permission_classes=[IsAuthenticated]
 
 	def post(self, request):
@@ -98,11 +99,11 @@ class LikePost(APIView):
 		if profile in post.liked_by.all():
 			post.liked_by.remove(profile)
 			post.save()
-			return Response({"liked": False}, status=HTTP_200_OK)
+			return Response({"liked": 'unlike' , 'likers':self.serializer_class(post).data}, status=HTTP_200_OK)
 		else:
 			post.liked_by.add(profile)
 			post.save()
-			return Response({"liked": True}, status=HTTP_200_OK)
+			return Response({"liked": 'like','likers':self.serializer_class(post).data}, status=HTTP_200_OK)
 
 
 class LikersListView(RetrieveAPIView):
@@ -121,7 +122,7 @@ class UserProfileView(RetrieveAPIView):
     permission_classes = [AllowAny] 
 
 
-class Follow(APIView):
+class FollowProfile(APIView):
 	permission_classes=[IsAuthenticated]
 	# permission_classes = [AllowAny]
 
@@ -137,7 +138,7 @@ class Follow(APIView):
 		if not created:
 			follow_obj.delete()
 		
-		follow = user.following.all().values_list('user_to__username', flat=True)
+		follow = user.following.all().values_list('user_to__user__username', flat=True)
 		return Response({"follow": follow}, status=HTTP_200_OK)
 
 
@@ -149,3 +150,16 @@ class Feeds(ListAPIView):
 		user = Profile.objects.get(user=self.request.user)
 		queryset = Post.objects.filter(owner__in=user.followers.all()).order_by('created')
 		return Response({"feeds": [post.description for post in queryset]}, status=HTTP_200_OK)
+
+
+# class Feeds(APIView):
+# 	serializer_class = PostSerializer
+# 	permission_classes = [IsAuthenticated]
+
+# 	def post(self, request):
+# 		user = request.user.profile
+# 		following = user.following.all()
+# 		print(user.following.all())
+# 		feeds = Post.objects.filter(owner__in=following)
+
+# 		return Response({"feeds": self.serializer_class(feeds).data}, status=HTTP_200_OK)
