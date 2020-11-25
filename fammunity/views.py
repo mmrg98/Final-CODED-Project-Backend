@@ -165,3 +165,4 @@ class Feeds(ListAPIView):
         followers= user.following.values_list('user_to', flat=True)
         queryset = Post.objects.filter(owner_id__in=followers).order_by('created')
         return queryset
+#owner=user
