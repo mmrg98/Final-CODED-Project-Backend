@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Profile,Post,Photo,Item,Comment
+from .models import Profile,Post,Photo,Item,Comment,Follow
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -67,9 +67,22 @@ class PostSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
 	user=UserSerializer()
 	posts=PostSerializer(many=True)
+	followed=serializers.SerializerMethodField()
+	following = serializers.SerializerMethodField()
 	class Meta:
 		model= Profile
-		fields = ['id','user','gender','image','posts']
+		fields = ['id','user','gender','image','posts','following','followers','followed']
+
+	def get_followed(self, obj):
+		user = self.context['request'].user
+		if user.is_authenticated:
+			return len(obj.followers.filter(user_from=user.profile)) > 0
+		return False
+
+	def get_following(self, obj):
+		following_objs = obj.following.all()
+		following_json = followingSerializer(following_objs, many=True).data
+		return following_json 
 
 
 class ProfileSerializer1(serializers.ModelSerializer):
@@ -78,6 +91,12 @@ class ProfileSerializer1(serializers.ModelSerializer):
         model= Profile
         fields = ['id','user','gender','image']
 
+class followingSerializer(serializers.ModelSerializer):
+	
+	class Meta:
+		model= Follow
+		fields = ['user_to']
+
 
 class LikeSerializer(serializers.ModelSerializer):
 	liked_by = ProfileSerializer1(many=True)
@@ -85,6 +104,13 @@ class LikeSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Post
 		fields = ['id','liked_by']
+
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Comment
+        fields = '__all__'
 
 
 	

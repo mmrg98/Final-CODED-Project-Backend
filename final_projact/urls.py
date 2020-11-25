@@ -16,6 +16,7 @@ urlpatterns = [
 
 
     path('feeds/', views.Feeds.as_view(), name="feeds"),
+    # path('feedsTest/', views.FeedsTest.as_view(), name="test"),
     path('explore/', views.PostListView.as_view(), name="explore"),
     path('post/', views.CreatePost.as_view(), name="post"),
 
@@ -24,7 +25,8 @@ urlpatterns = [
 
     path('follow/', views.FollowProfile.as_view(), name="follow"),
 
-
+    path('comments/', views.Comments.as_view(), name="comments"),
+    path('comment/', views.CreateComment.as_view(), name="comment"),
 
 ]
 
