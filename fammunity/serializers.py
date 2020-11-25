@@ -106,4 +106,11 @@ class LikeSerializer(serializers.ModelSerializer):
 		fields = ['id','liked_by']
 
 
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Comment
+        fields = '__all__'
+
+
 	
