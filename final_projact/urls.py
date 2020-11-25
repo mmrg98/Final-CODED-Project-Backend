@@ -23,6 +23,10 @@ urlpatterns = [
     path('likers/<int:post_id>', views.LikersListView.as_view(), name="likers"),
 
     path('follow/', views.FollowProfile.as_view(), name="follow"),
+    path('comment/', views.CreateComment.as_view(), name="comment"),
+    path('comments/', views.Comments.as_view(), name="comments"),
+    path('feedsTest/', views.FeedsTest.as_view(), name="test"),
+
 
 
 

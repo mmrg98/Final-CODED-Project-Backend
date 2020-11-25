@@ -40,6 +40,12 @@ class ItemSerializer(serializers.ModelSerializer):
 		fields = '__all__'
 
 
+class CommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model= Comment
+		fields = '__all__'
+
+
 class PostSerializer(serializers.ModelSerializer):
 	photos=PhotoSerializer(many=True)
 	items=ItemSerializer(many=True)
@@ -85,6 +91,3 @@ class LikeSerializer(serializers.ModelSerializer):
 	class Meta:
 		model= Post
 		fields = ['id','liked_by']
-
-
-	
