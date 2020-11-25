@@ -55,7 +55,10 @@ class CreatePost(APIView):
 			file_value = files[f'photo{i}']
 			Photo.objects.create(post=post,image=file_value)
 
-		return Response(self.serializer_class(post,context={'request':request}).data ,status=HTTP_200_OK)
+		return Response(
+			self.serializer_class(post,context={'request':request}).data,
+			status=HTTP_200_OK
+		)
 
 
 class CreateComment(APIView):
@@ -83,7 +86,6 @@ class UpdateProfile(APIView):
 	permission_classes = [IsAuthenticated]
 
 	def post(self, request):
-		files = request.FILES
 		user = self.request.user
 		user.first_name= request.data['first_name']
 		user.last_name= request.data['last_name']
@@ -92,7 +94,7 @@ class UpdateProfile(APIView):
 
 		profile = user.profile
 		profile.gender= request.data['gender']
-		profile.image = files['image']
+		profile.image = request.FILES['image']
 		profile.save()
 		return Response({"username": profile.user.username}, status=HTTP_200_OK)
 
@@ -107,12 +109,15 @@ class LikePost(APIView):
 
 		if profile in post.liked_by.all():
 			post.liked_by.remove(profile)
-			post.save()
-			return Response({"liked": 'unlike' , 'likers':self.serializer_class(post).data}, status=HTTP_200_OK)
+			liked = False
 		else:
 			post.liked_by.add(profile)
-			post.save()
-			return Response({"liked": 'like','likers':self.serializer_class(post).data}, status=HTTP_200_OK)
+			liked = True
+		
+		return Response(
+			{"liked": liked , 'likers':self.serializer_class(post).data}, 
+			status=HTTP_200_OK
+		)
 
 
 class LikersListView(RetrieveAPIView):
@@ -151,23 +156,12 @@ class FollowProfile(APIView):
 		return Response({"follow": follow}, status=HTTP_200_OK)
 
 
-# class FeedsTest(ListAPIView):
-#     serializer_class = PostSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def post(self, request):
-#         user = Profile.objects.get(user=self.request.user)
-#         followers= Follow.objects.filter(user_from=user)
-#         queryset = Post.objects.filter(owner__in= [following.user_to for following in followers]).order_by('created')
-#         return Response({"feeds": [post.description for post in queryset]}, status=HTTP_200_OK)
-
 class Feeds(ListAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user.profile
-        followers= Follow.objects.filter(user_from=user)
-        queryset = Post.objects.filter(owner__in= [following.user_to for following in followers]).order_by('created')
-
+        followers= user.following.values_list('user_to', flat=True)
+        queryset = Post.objects.filter(owner_id__in=followers).order_by('created')
         return queryset

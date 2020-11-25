@@ -76,7 +76,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 	def get_followed(self, obj):
 		user = self.context['request'].user
 		if user.is_authenticated:
-			return len(obj.followers.filter(user_from=user.profile)) > 0
+			return obj.followers.filter(user_from=user.profile).exists()
 		return False
 
 	def get_following(self, obj):
