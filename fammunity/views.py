@@ -120,7 +120,7 @@ class LikersListView(RetrieveAPIView):
     lookup_field = 'id'
     lookup_url_kwarg = 'post_id'
     serializer_class = LikeSerializer
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
 
 class UserProfileView(RetrieveAPIView):
@@ -128,7 +128,7 @@ class UserProfileView(RetrieveAPIView):
     lookup_field = 'id'
     lookup_url_kwarg = 'owner_id'
     serializer_class = ProfileSerializer
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
 
 class FollowProfile(APIView):
@@ -138,7 +138,7 @@ class FollowProfile(APIView):
 	def post(self, request):
 		user = request.user.profile
 		user_to_follow = Profile.objects.get(user=request.data['profile_id'])
-		
+
 		follow_obj, created = Follow.objects.get_or_create(
 			user_from = user,
 			user_to = user_to_follow,
@@ -146,7 +146,7 @@ class FollowProfile(APIView):
 
 		if not created:
 			follow_obj.delete()
-		
+
 		follow = user.following.all().values_list('user_to__user__username', flat=True)
 		return Response({"follow": follow}, status=HTTP_200_OK)
 
@@ -171,6 +171,3 @@ class Feeds(ListAPIView):
         queryset = Post.objects.filter(owner__in= [following.user_to for following in followers]).order_by('created')
 
         return queryset
-
-
-

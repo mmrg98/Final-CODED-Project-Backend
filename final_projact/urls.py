@@ -9,7 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', TokenObtainPairView.as_view() , name='login'),
     path('signup/', views.SignUpAPIView.as_view(), name='register'),
-    
+
     path('profile/', views.ProfileView.as_view(), name="profile"),
     path('user-profile/<int:owner_id>', views.UserProfileView.as_view(), name="user-profile"),
     path('profile/edit/', views.UpdateProfile.as_view(), name="edit-profile"),
@@ -27,9 +27,6 @@ urlpatterns = [
 
     path('comments/', views.Comments.as_view(), name="comments"),
     path('comment/', views.CreateComment.as_view(), name="comment"),
-    
-
-
 
 ]
 
