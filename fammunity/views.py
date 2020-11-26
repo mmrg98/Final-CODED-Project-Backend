@@ -62,6 +62,7 @@ class CreatePost(APIView):
 
 
 class CreateComment(APIView):
+	serializer_class = CommentSerializer
 	permission_classes = [IsAuthenticated]
 
 	def post(self, request):
@@ -70,15 +71,23 @@ class CreateComment(APIView):
 			post_id=request.data['post_id'],
 			commenter=self.request.user.profile
 		)
-		return Response({"comment": comment.txt}, status=HTTP_200_OK)
+		return Response(self.serializer_class(comment).data, status=HTTP_200_OK)
 
 
-class Comments(ListAPIView):
-    serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+class Comments(RetrieveAPIView):
+	queryset = Post.objects.all()
+	lookup_field = 'id'
+	lookup_url_kwarg = 'post_id'
+	serializer_class = CommentSerializer
+	permission_classes = [AllowAny]
 
-    def get_queryset(self):
-        return Comment.objects.filter(post_id=self.request.data['post_id'])
+
+	'''serializer_class = CommentSerializer
+	permission_classes = [IsAuthenticated]
+
+	def get_queryset(self):
+		print("post id",self.request.data)
+		return Comment.objects.filter(post_id=self.request.data['post_id'])'''
 
 
 class UpdateProfile(APIView):
@@ -113,9 +122,9 @@ class LikePost(APIView):
 		else:
 			post.liked_by.add(profile)
 			liked = True
-		
+
 		return Response(
-			{"liked": liked , 'likers':self.serializer_class(post).data}, 
+			{"liked": liked , 'likers':self.serializer_class(post).data},
 			status=HTTP_200_OK
 		)
 
