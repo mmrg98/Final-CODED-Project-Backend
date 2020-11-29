@@ -25,7 +25,7 @@ urlpatterns = [
 
     path('follow/', views.FollowProfile.as_view(), name="follow"),
 
-    path('comments/', views.Comments.as_view(), name="comments"),
+    path('comments/<int:post_id>', views.Comments.as_view(), name="comments"),
     path('comment/', views.CreateComment.as_view(), name="comment"),
 
 ]

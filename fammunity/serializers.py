@@ -82,7 +82,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 	def get_following(self, obj):
 		following_objs = obj.following.all()
 		following_json = followingSerializer(following_objs, many=True).data
-		return following_json 
+		return following_json
 
 
 class ProfileSerializer1(serializers.ModelSerializer):
@@ -91,8 +91,9 @@ class ProfileSerializer1(serializers.ModelSerializer):
         model= Profile
         fields = ['id','user','gender','image']
 
+
 class followingSerializer(serializers.ModelSerializer):
-	
+
 	class Meta:
 		model= Follow
 		fields = ['user_to']
@@ -106,11 +107,12 @@ class LikeSerializer(serializers.ModelSerializer):
 		fields = ['id','liked_by']
 
 
-
 class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model= Comment
-        fields = '__all__'
-
-
-	
+	comments = serializers.SlugRelatedField(
+	many=True,
+	read_only=True,
+	slug_field='txt'
+	)
+	class Meta:
+		model= Post
+		fields = ['comments']
