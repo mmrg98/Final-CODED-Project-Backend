@@ -108,11 +108,16 @@ class LikeSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-	comments = serializers.SlugRelatedField(
-	many=True,
-	read_only=True,
-	slug_field='txt'
-	)
+    class Meta:
+        model= Comment
+        fields = '__all__'
+		
+
+class CommentSerializerList(serializers.ModelSerializer):
+	comments = CommentSerializer(many=True)
 	class Meta:
 		model= Post
 		fields = ['comments']
+
+
+

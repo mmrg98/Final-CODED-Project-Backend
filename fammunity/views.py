@@ -3,7 +3,7 @@ from rest_framework.generics import (
 	RetrieveUpdateAPIView
 )
 from .serializers import  (
-	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer,CommentSerializer
+	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer,CommentSerializer,CommentSerializerList
 )
 from .models import Profile, Post, Photo, Item, Comment,Brand, Follow
 from rest_framework.views import APIView
@@ -78,7 +78,7 @@ class Comments(RetrieveAPIView):
 	queryset = Post.objects.all()
 	lookup_field = 'id'
 	lookup_url_kwarg = 'post_id'
-	serializer_class = CommentSerializer
+	serializer_class = CommentSerializerList
 	permission_classes = [AllowAny]
 
 
