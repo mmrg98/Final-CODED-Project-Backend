@@ -39,17 +39,22 @@ class ItemSerializer(serializers.ModelSerializer):
 		model= Item
 		fields = '__all__'
 
+class ProfileSerializer1(serializers.ModelSerializer):
+    user=UserSerializer()
+    class Meta:
+        model= Profile
+        fields = ['id','user','gender','image']
 
 class PostSerializer(serializers.ModelSerializer):
 	photos=PhotoSerializer(many=True)
 	items=ItemSerializer(many=True)
 	likers_number = serializers.SerializerMethodField()
 	liked = serializers.SerializerMethodField()
-	owner_name = serializers.SerializerMethodField()
+	owner = ProfileSerializer1()
 
 	class Meta:
 		model= Post
-		fields = ['id','description','photos','items','likers_number', 'owner','liked','owner_name']
+		fields = ['id','description','photos','items','likers_number', 'owner','liked']
 
 	def get_likers_number(self, obj):
 		return obj.liked_by.all().count()
@@ -60,8 +65,6 @@ class PostSerializer(serializers.ModelSerializer):
 			return user.profile in obj.liked_by.all()
 		return False
 
-	def get_owner_name(self, obj):
-		return obj.owner.user.username
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -84,12 +87,6 @@ class ProfileSerializer(serializers.ModelSerializer):
 		following_json = followingSerializer(following_objs, many=True).data
 		return following_json
 
-
-class ProfileSerializer1(serializers.ModelSerializer):
-    user=UserSerializer()
-    class Meta:
-        model= Profile
-        fields = ['id','user','gender','image']
 
 
 class followingSerializer(serializers.ModelSerializer):
