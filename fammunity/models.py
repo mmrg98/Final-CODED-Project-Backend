@@ -45,6 +45,10 @@ class Photo(models.Model):
 
 class Brand(models.Model):
 	name = models.CharField(max_length=250)
+	image = models.ImageField(null=True,upload_to='brand_logos')
+
+	def __str__(self):
+		return self.name
 
 
 class Item(models.Model):
