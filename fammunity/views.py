@@ -3,7 +3,7 @@ from rest_framework.generics import (
 	RetrieveUpdateAPIView
 )
 from .serializers import  (
-	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer,CommentSerializer,CommentSerializerList
+	SignUpSerializer, ProfileSerializer, PostSerializer,LikeSerializer,BrandSerializer,CommentSerializer,CommentSerializerList
 )
 from .models import Profile, Post, Photo, Item, Comment,Brand, Follow
 from rest_framework.views import APIView
@@ -27,6 +27,11 @@ class ProfileView(RetrieveAPIView):
 class PostListView(ListAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
+	permission_classes = [AllowAny]
+
+class BrandListView(ListAPIView):
+	queryset = Brand.objects.all()
+	serializer_class = BrandSerializer
 	permission_classes = [AllowAny]
 
 
