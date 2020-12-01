@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Profile,Post,Photo,Item,Comment,Follow
+from .models import Profile,Post,Photo,Item,Comment,Follow,Brand
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -34,10 +34,18 @@ class PhotoSerializer(serializers.ModelSerializer):
 		fields = ['id','image']
 
 
+class BrandSerializer(serializers.ModelSerializer):
+	class Meta:
+		model= Brand
+		fields = '__all__'
+
+
 class ItemSerializer(serializers.ModelSerializer):
+	brand=BrandSerializer()
 	class Meta:
 		model= Item
-		fields = '__all__'
+		fields = ['name','brand','price','post']
+
 
 class ProfileSerializer1(serializers.ModelSerializer):
     user=UserSerializer()

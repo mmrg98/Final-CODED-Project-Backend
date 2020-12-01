@@ -28,6 +28,9 @@ urlpatterns = [
     path('comments/<int:post_id>', views.Comments.as_view(), name="comments"),
     path('comment/', views.CreateComment.as_view(), name="comment"),
 
+    path('brands/', views.BrandListView.as_view(), name="brands"),
+
+
 ]
 
 if settings.DEBUG:
