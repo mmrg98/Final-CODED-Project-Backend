@@ -11,6 +11,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from django.contrib.auth.models import User
+from rest_framework.filters import SearchFilter,OrderingFilter
+
 
 
 class SignUpAPIView(CreateAPIView):
@@ -27,7 +29,10 @@ class ProfileView(RetrieveAPIView):
 class PostListView(ListAPIView):
 	queryset = Post.objects.all()
 	serializer_class = PostSerializer
-	permission_classes = [AllowAny]
+	filter_backends = [SearchFilter,OrderingFilter,]
+	permission_classes = [IsAuthenticated]
+
+
 
 class BrandListView(ListAPIView):
 	queryset = Brand.objects.all()
