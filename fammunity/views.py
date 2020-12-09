@@ -27,7 +27,7 @@ class ProfileView(RetrieveAPIView):
 
 
 class PostListView(ListAPIView):
-	queryset = Post.objects.all()
+	queryset = Post.objects.all().order_by('-created')
 	serializer_class = PostSerializer
 	filter_backends = [SearchFilter,OrderingFilter,]
 	permission_classes = [IsAuthenticated]
